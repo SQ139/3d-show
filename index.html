@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>3D 漫游</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;user-select:none}
+    :root{--bg:#0a0a0a;--surface:rgba(16,16,16,.85);--border:#2a2a2a;--text:#eee;--muted:#888;--accent:#7c6aef}
+    html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:system-ui,sans-serif;color:var(--text);touch-action:none}
+    canvas{display:block;touch-action:none}
+
+    /* 顶部栏 */
+    .topbar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:4px 12px;background:var(--surface);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:32px}
+    .topbar h1{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:50vw}
+    .topbar-right{display:flex;gap:4px;align-items:center}
+    .tag{padding:1px 6px;border-radius:4px;font-size:9px;border:1px solid var(--border);color:var(--muted)}
+    .pill{padding:1px 6px;border-radius:8px;font-size:9px;background:rgba(124,106,239,.15);color:var(--accent);border:1px solid rgba(124,106,239,.25);display:none}
+
+    /* 准星 */
+    .cross{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:60;pointer-events:none;opacity:.2}
+    .cross::before,.cross::after{content:'';position:absolute;background:#fff}
+    .cross::before{width:14px;height:1.5px;left:-7px;top:-.75px}
+    .cross::after{width:1.5px;height:14px;left:-.75px;top:-7px}
+
+    /* 左摇杆 */
+    .joy-zone{position:fixed;bottom:20px;left:20px;z-index:80;width:110px;height:110px}
+    .joy-base{position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.08)}
+    .joy-thumb{position:absolute;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.2);left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
+    .joy-thumb.on{background:rgba(124,106,239,.35);border-color:rgba(124,106,239,.5)}
+
+    /* 右侧触摸视角区（透明，占右半屏） */
+    .look-zone{position:fixed;top:32px;right:0;bottom:0;width:55%;z-index:50}
+
+    /* 跳跃/下蹲按钮 Minecraft风格 */
+    .act-btn{position:fixed;z-index:80;width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+    .act-btn:active{background:rgba(124,106,239,.3);border-color:rgba(124,106,239,.4);color:#fff}
+    .btn-jump{right:20px;bottom:28px}
+    .btn-sneak{right:80px;bottom:28px}
+
+    /* 右侧小工具 */
+    .tools{position:fixed;right:6px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:3px}
+    .tbtn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .tbtn:active{transform:scale(.9)}
+    .tbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .tsep{height:1px;background:var(--border);margin:1px 3px}
+
+    /* 上传 */
+    .upload{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+    .upload.hide{display:none}
+    .upload-card{text-align:center;padding:36px 24px;border:2px dashed var(--border);border-radius:16px;max-width:340px;width:100%;cursor:pointer}
+    .upload-card:hover{border-color:var(--accent)}
+    .upload-card h2{font-size:16px;font-weight:500;margin:12px 0 6px}
+    .upload-card p{color:var(--muted);font-size:11px;line-height:1.6}
+    .fmts{display:flex;gap:4px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+    .fmts span{padding:2px 7px;background:rgba(40,40,40,.8);border:1px solid var(--border);border-radius:3px;font-size:9px;color:var(--muted)}
+    input[type=file]{display:none}
+
+    /* 加载 */
+    .loader{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:150;text-align:center;display:none}
+    .loader.show{display:block}
+    .spin{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 10px}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    .loader p{color:var(--muted);font-size:11px}
+
+    .pbar{position:fixed;top:0;left:0;height:2px;z-index:300;background:var(--accent);width:0%;transition:width .2s}
+
+    /* 分享弹窗 */
+    .share-modal{position:fixed;inset:0;z-index:250;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:20px}
+    .share-modal.show{display:flex}
+    .share-card{background:#1a1a1a;border:1px solid var(--border);border-radius:14px;padding:24px;max-width:360px;width:100%}
+    .share-card h3{font-size:15px;font-weight:500;margin-bottom:12px}
+    .share-card p{color:var(--muted);font-size:12px;line-height:1.6;margin:8px 0}
+    .share-card a{color:var(--accent)}
+    .share-link-row{display:flex;gap:6px;margin-top:10px}
+    .share-link-row input{flex:1;background:#111;border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;outline:none;user-select:text}
+    .share-link-row input:focus{border-color:var(--accent)}
+    .share-link-row button,.share-card button.btn{padding:8px 14px;border-radius:6px;border:none;background:var(--accent);color:#fff;font-size:12px;cursor:pointer;white-space:nowrap}
+    .share-card button.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);margin-top:10px;width:100%}
+    .share-card button.btn-outline:hover{border-color:var(--accent);color:var(--text)}
+    .share-manual{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+    .share-manual.show{display:block}
+  </style>
+</head>
+<body>
+
+<div class="pbar" id="pbar"></div>
+
+<div class="upload" id="uploadPage">
+  <div class="upload-card" id="uploadCard">
+    <div style="font-size:36px;opacity:.6">📦</div>
+    <h2>拖入或点击上传模型</h2>
+    <p>支持 GLB / FBX / OBJ<br>文件仅在本地处理</p>
+    <div class="fmts"><span>.glb</span><span>.fbx</span><span>.obj</span></div>
+    <input type="file" id="fileInput" accept=".glb,.gltf,.fbx,.obj">
+  </div>
+</div>
+
+<div class="loader" id="loader"><div class="spin"></div><p>加载中…</p></div>
+
+<div class="topbar">
+  <h1 id="mName">3D 漫游</h1>
+  <div class="topbar-right">
+    <span class="tag" id="speedTag">1x</span>
+    <span class="tag">mm</span>
+    <span class="pill" id="fmtPill"></span>
+  </div>
+</div>
+
+<div id="wrap" style="width:100vw;height:100vh"></div>
+<div class="cross"></div>
+
+<!-- 右侧触摸视角区 -->
+<div class="look-zone" id="lookZone"></div>
+
+<!-- 左摇杆 -->
+<div class="joy-zone" id="joyZone">
+  <div class="joy-base"></div>
+  <div class="joy-thumb" id="joyThumb"></div>
+</div>
+
+<!-- 跳跃/下蹲 -->
+<div class="act-btn btn-jump" id="btnJump">跳</div>
+<div class="act-btn btn-sneak" id="btnSneak">蹲</div>
+
+<!-- 小工具 -->
+<div class="tools">
+  <button class="tbtn" id="tFS" title="全屏">⛶</button>
+  <div class="tsep"></div>
+  <button class="tbtn" id="tFaster" title="加速">+</button>
+  <button class="tbtn" id="tSlower" title="减速">-</button>
+  <div class="tsep"></div>
+  <button class="tbtn" id="tWire" title="线框">◇</button>
+  <button class="tbtn" id="tReset" title="重置">↺</button>
+  <button class="tbtn" id="tNew" title="换模型">+</button>
+  <button class="tbtn" id="tShare" title="分享">🔗</button>
+</div>
+
+<!-- 分享弹窗 -->
+<div class="share-modal" id="shareModal">
+  <div class="share-card">
+    <h3>📤 分享模型</h3>
+    <p id="shareStatus">正在上传模型到云端…</p>
+    <div class="share-link-row" id="shareLinkBox" style="display:none">
+      <input id="shareLink" readonly>
+      <button id="shareCopy">复制</button>
+    </div>
+    <div class="share-manual" id="shareManual">
+      <p>自动上传失败，请手动操作：</p>
+      <p>1. 打开 <a href="https://pixeldrain.com" target="_blank">pixeldrain.com</a> 上传模型</p>
+      <p>2. 复制文件链接（如 https://pixeldrain.com/api/file/xxx），粘贴到下方：</p>
+      <div class="share-link-row">
+        <input id="shareManualUrl" placeholder="https://pixeldrain.com/api/file/xxx">
+        <button id="shareManualGen">生成</button>
+      </div>
+    </div>
+    <button class="btn-outline" id="shareClose">关闭</button>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports":{
+    "three":"https://unpkg.com/three@0.168.0/build/three.module.js",
+    "three/addons/":"https://unpkg.com/three@0.168.0/examples/jsm/",
+    "fflate":"https://unpkg.com/fflate@0.8.2/esm/browser.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const $ = id => document.getElementById(id);
+
+/* ====== 全局状态 ====== */
+let scene, camera, renderer, model, fakeShadow, currentFile;
+let yaw = 0, pitch = 0;
+const PITCH_MAX = Math.PI * 0.47;
+
+const TOUCH_LOOK = 0.003;
+const MOUSE_LOOK = 0.002;
+const JOY_LERP   = 0.12;
+
+let baseSpeed = 50;
+let speedMul  = 1.0;
+
+const joy  = {x:0, y:0, tid:null};
+const sJoy = {x:0, y:0};
+let jumpHeld = false, sneakHeld = false;
+const keys = {};
+
+let lookTid = null, lookLastX = 0, lookLastY = 0;
+let mDown = false, mLastX = 0, mLastY = 0;
+let pinchDist = 0, pinching = false;
+
+/* ====== 初始化场景 ====== */
+function init() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0a0a0a);
+
+  camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.01, 50000);
+  camera.position.set(200, 150, 300);
+
+  renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  $('wrap').appendChild(renderer.domElement);
+
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  pmrem.dispose();
+
+  const dl = new THREE.DirectionalLight(0xffffff, 1.5);
+  dl.position.set(5000,10000,7000);
+  dl.castShadow = true;
+  dl.shadow.mapSize.set(2048,2048);
+  const s=5000;
+  Object.assign(dl.shadow.camera,{left:-s,right:s,top:s,bottom:-s,near:1,far:50000});
+  scene.add(dl);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+
+  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(20000,20000), new THREE.ShadowMaterial({opacity:0.12}));
+  gnd.rotation.x=-Math.PI/2; gnd.receiveShadow=true; gnd.name='__gnd__'; scene.add(gnd);
+  let grid = new THREE.GridHelper(2000,20,0x333333,0x1a1a1a); grid.name='__grid__'; scene.add(grid);
+  let axes = new THREE.AxesHelper(100); axes.name='__axes__'; scene.add(axes);
+
+  createFakeShadow(200);
+  lookAtTarget(new THREE.Vector3(0,0,0));
+
+  setupJoystick();
+  setupTouchLook();
+  setupMouse();
+  setupPinch();
+  setupKeyboard();
+  setupButtons();
+  window.addEventListener('resize', onResize);
+  animate();
+}
+
+/* ====== 分享 ====== */
+async function shareModel() {
+  const p = new URLSearchParams(location.search);
+  if (p.get('model')) {
+    $('shareLink').value = location.href;
+    $('shareLinkBox').style.display = 'flex';
+    $('shareStatus').textContent = '分享链接已生成！';
+    $('shareManual').classList.remove('show');
+    $('shareModal').classList.add('show');
+    return;
+  }
+  if (!currentFile) { alert('请先加载模型'); return; }
+
+  $('shareModal').classList.add('show');
+  $('shareStatus').textContent = '正在上传模型到云端…';
+  $('shareLinkBox').style.display = 'none';
+  $('shareManual').classList.remove('show');
+
+  const hosts = [
+    { name:'Pixeldrain', fn: uploadPixeldrain },
+    { name:'File.io', fn: uploadFileio },
+  ];
+
+  for (const host of hosts) {
+    try {
+      $('shareStatus').textContent = `正在通过 ${host.name} 上传…`;
+      const modelUrl = await host.fn(currentFile);
+      if (!modelUrl) continue;
+      const shareUrl = location.origin + location.pathname + '?model=' + encodeURIComponent(modelUrl);
+      $('shareLink').value = shareUrl;
+      $('shareLinkBox').style.display = 'flex';
+      $('shareStatus').textContent = '✅ 分享链接已生成！发给客户即可查看';
+      return;
+    } catch(err) {
+      console.warn(host.name + ' failed:', err);
+    }
+  }
+
+  $('shareStatus').textContent = '自动上传失败，请手动操作：';
+  $('shareManual').classList.add('show');
+}
+
+async function uploadPixeldrain(file) {
+  const resp = await fetch('https://pixeldrain.com/api/file/' + encodeURIComponent(file.name), {
+    method: 'PUT',
+    body: file,
+    headers: { 'Content-Type': 'application/octet-stream' }
+  });
+  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  const data = await resp.json();
+  if (!data.id) throw new Error('No id');
+  return 'https://pixeldrain.com/api/file/' + data.id;
+}
+
+async function uploadFileio(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  const resp = await fetch('https://file.io/?expires=7d', { method: 'POST', body: fd });
+  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  const data = await resp.json();
+  if (!data.success || !data.link) throw new Error('Upload failed');
+  return data.link;
+}
+
+/* ====== 假阴影 ====== */
+function createFakeShadow(size) {
+  if(fakeShadow){scene.remove(fakeShadow);fakeShadow.material.map?.dispose();fakeShadow.material.dispose();fakeShadow.geometry.dispose();}
+  const res=256, c=document.createElement('canvas'); c.width=c.height=res;
+  const ctx=c.getContext('2d');
+  const g=ctx.createRadialGradient(res/2,res/2,0,res/2,res/2,res/2);
+  g.addColorStop(0,'rgba(0,0,0,0.45)');
+  g.addColorStop(0.4,'rgba(0,0,0,0.2)');
+  g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,res,res);
+  const tex=new THREE.CanvasTexture(c);
+  const geo=new THREE.PlaneGeometry(size,size);
+  const mat=new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false});
+  fakeShadow=new THREE.Mesh(geo,mat);
+  fakeShadow.rotation.x=-Math.PI/2;
+  fakeShadow.position.y=0.5;
+  fakeShadow.name='__shadow__';
+  scene.add(fakeShadow);
+}
+
+function updateFakeShadow() {
+  if(!model||!fakeShadow) return;
+  const box=new THREE.Box3().setFromObject(model);
+  const center=box.getCenter(new THREE.Vector3());
+  const size=box.getSize(new THREE.Vector3());
+  const maxDim=Math.max(size.x,size.z)*1.2;
+  fakeShadow.position.x=center.x;
+  fakeShadow.position.z=center.z;
+  fakeShadow.position.y=box.min.y+0.5;
+  fakeShadow.scale.set(maxDim/(fakeShadow.geometry.parameters.width),1,maxDim/(fakeShadow.geometry.parameters.width));
+}
+
+/* ====== 相机控制 ====== */
+function lookAtTarget(target) {
+  const dir = target.clone().sub(camera.position).normalize();
+  yaw   = Math.atan2(-dir.x, -dir.z);
+  pitch = Math.asin(THREE.MathUtils.clamp(dir.y, -1, 1));
+  pitch = THREE.MathUtils.clamp(pitch, -PITCH_MAX, PITCH_MAX);
+}
+
+function applyCamera() {
+  const dir = new THREE.Vector3(
+    -Math.sin(yaw) * Math.cos(pitch),
+     Math.sin(pitch),
+    -Math.cos(yaw) * Math.cos(pitch)
+  ).normalize();
+  camera.lookAt(camera.position.clone().add(dir.multiplyScalar(100)));
+}
+
+/* ====== 左摇杆 ====== */
+function setupJoystick() {
+  const zone = $('joyZone'), thumb = $('joyThumb');
+  const maxR = 35;
+
+  function center() {
+    const r = zone.getBoundingClientRect();
+    return {x: r.left+r.width/2, y: r.top+r.height/2};
+  }
+
+  function move(t) {
+    const c = center();
+    let dx = t.clientX - c.x, dy = t.clientY - c.y;
+    const d = Math.sqrt(dx*dx+dy*dy);
+    if(d>maxR){dx=dx/d*maxR; dy=dy/d*maxR;}
+    thumb.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+    joy.x = dx/maxR;
+    joy.y = dy/maxR;
+  }
+
+  function reset() {
+    thumb.style.transform = 'translate(-50%,-50%)';
+    thumb.classList.remove('on');
+    joy.x=0; joy.y=0; joy.tid=null;
+  }
+
+  zone.addEventListener('touchstart', e=>{
+    e.preventDefault(); e.stopPropagation();
+    if(joy.tid!==null) return;
+    const t=e.changedTouches[0]; joy.tid=t.identifier;
+    thumb.classList.add('on'); move(t);
+  },{passive:false});
+
+  zone.addEventListener('touchmove', e=>{
+    e.preventDefault(); e.stopPropagation();
+    for(const t of e.changedTouches){if(t.identifier===joy.tid){move(t);break;}}
+  },{passive:false});
+
+  const end = e=>{for(const t of e.changedTouches){if(t.identifier===joy.tid){reset();break;}}};
+  zone.addEventListener('touchend', end);
+  zone.addEventListener('touchcancel', end);
+}
+
+/* ====== 触摸视角（右半屏拖动） ====== */
+function setupTouchLook() {
+  const zone = $('lookZone');
+
+  zone.addEventListener('touchstart', e=>{
+    if(lookTid!==null) return;
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    lookTid = t.identifier;
+    lookLastX = t.clientX; lookLastY = t.clientY;
+  },{passive:false});
+
+  zone.addEventListener('touchmove', e=>{
+    e.preventDefault();
+    for(const t of e.changedTouches){
+      if(t.identifier===lookTid){
+        const dx = t.clientX - lookLastX;
+        const dy = t.clientY - lookLastY;
+        yaw   -= dx * TOUCH_LOOK;
+        pitch -= dy * TOUCH_LOOK;
+        pitch  = THREE.MathUtils.clamp(pitch, -PITCH_MAX, PITCH_MAX);
+        lookLastX = t.clientX; lookLastY = t.clientY;
+        break;
+      }
+    }
+  },{passive:false});
+
+  const end = e=>{for(const t of e.changedTouches){if(t.identifier===lookTid){lookTid=null;break;}}};
+  zone.addEventListener('touchend', end);
+  zone.addEventListener('touchcancel', end);
+}
+
+/* ====== 鼠标（桌面端） ====== */
+function setupMouse() {
+  const el = renderer.domElement;
+  el.addEventListener('mousedown', e=>{
+    if(e.button===0){mDown=true; mLastX=e.clientX; mLastY=e.clientY;}
+  });
+  window.addEventListener('mousemove', e=>{
+    if(!mDown) return;
+    yaw   -= (e.clientX-mLastX) * MOUSE_LOOK;
+    pitch -= (e.clientY-mLastY) * MOUSE_LOOK;
+    pitch  = THREE.MathUtils.clamp(pitch, -PITCH_MAX, PITCH_MAX);
+    mLastX=e.clientX; mLastY=e.clientY;
+  });
+  window.addEventListener('mouseup', ()=>{mDown=false;});
+  el.addEventListener('wheel', e=>{
+    e.preventDefault();
+    const fwd = new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw)).normalize();
+    camera.position.addScaledVector(fwd, -e.deltaY*baseSpeed*0.01);
+  },{passive:false});
+}
+
+/* ====== 双指缩放 ====== */
+function setupPinch() {
+  const el = renderer.domElement;
+  el.addEventListener('touchstart', e=>{
+    if(e.touches.length===2){
+      pinching=true;
+      pinchDist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+    }
+  },{passive:false});
+  el.addEventListener('touchmove', e=>{
+    if(!pinching||e.touches.length!==2) return;
+    const nd = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+    const fwd = new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw)).normalize();
+    camera.position.addScaledVector(fwd, -(nd-pinchDist)*baseSpeed*0.005);
+    pinchDist=nd;
+  },{passive:false});
+  const end=()=>{pinching=false;};
+  el.addEventListener('touchend',end);
+  el.addEventListener('touchcancel',end);
+}
+
+/* ====== 键盘 ====== */
+function setupKeyboard() {
+  addEventListener('keydown', e=>{keys[e.code]=true;});
+  addEventListener('keyup',   e=>{keys[e.code]=false;});
+}
+
+/* ====== 按钮 ====== */
+function setupButtons() {
+  holdBtn('btnJump',  v=>{jumpHeld=v;});
+  holdBtn('btnSneak', v=>{sneakHeld=v;});
+
+  $('tFS').onclick = async()=>{
+    try{
+      if(!document.fullscreenElement) await document.documentElement.requestFullscreen();
+      else await document.exitFullscreen();
+    }catch(e){}
+  };
+  $('tFaster').onclick = ()=>{speedMul=Math.min(speedMul*2,16); $('speedTag').textContent=speedMul+'x';};
+  $('tSlower').onclick = ()=>{speedMul=Math.max(speedMul/2,0.0625); $('speedTag').textContent=speedMul+'x';};
+  $('tWire').onclick = function(){this.classList.toggle('on'); if(model) model.traverse(n=>{if(n.isMesh)n.material.wireframe=this.classList.contains('on');});};
+  $('tReset').onclick = ()=>{if(model) fitCamera(model); speedMul=1; $('speedTag').textContent='1x';};
+  $('tNew').onclick = ()=>{$('uploadPage').classList.remove('hide'); $('fileInput').value='';};
+  $('tShare').onclick = shareModel;
+  $('shareClose').onclick = ()=>{$('shareModal').classList.remove('show');};
+  $('shareCopy').onclick = ()=>{
+    const inp=$('shareLink'); inp.select();
+    navigator.clipboard?.writeText(inp.value).then(()=>{alert('已复制到剪贴板');}).catch(()=>{document.execCommand('copy');alert('已复制');});
+  };
+  $('shareManualGen').onclick = ()=>{
+    const url=$('shareManualUrl').value.trim();
+    if(!url.startsWith('http')){alert('请输入有效的模型链接');return;}
+    const shareUrl=location.origin+location.pathname+'?model='+encodeURIComponent(url);
+    $('shareLink').value=shareUrl;
+    $('shareLinkBox').style.display='flex';
+    $('shareStatus').textContent='分享链接已生成！';
+  };
+}
+
+function holdBtn(id, cb) {
+  const el = $(id);
+  el.addEventListener('mousedown',  ()=>cb(true));
+  el.addEventListener('mouseup',    ()=>cb(false));
+  el.addEventListener('mouseleave', ()=>cb(false));
+  el.addEventListener('touchstart', e=>{e.preventDefault();cb(true);},{passive:false});
+  el.addEventListener('touchend',   e=>{e.preventDefault();cb(false);});
+  el.addEventListener('touchcancel',()=>cb(false));
+}
+
+/* ====== 主循环 ====== */
+function processInput() {
+  sJoy.x += (joy.x - sJoy.x) * JOY_LERP;
+  sJoy.y += (joy.y - sJoy.y) * JOY_LERP;
+
+  const fwd   = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw)).normalize();
+  const right = new THREE.Vector3( Math.cos(yaw), 0, -Math.sin(yaw)).normalize();
+
+  const spd = baseSpeed * speedMul;
+  const move = new THREE.Vector3();
+
+  if(keys['KeyW']||keys['ArrowUp'])    move.addScaledVector(fwd, spd);
+  if(keys['KeyS']||keys['ArrowDown'])  move.addScaledVector(fwd,-spd);
+  if(keys['KeyA']||keys['ArrowLeft'])  move.addScaledVector(right,-spd);
+  if(keys['KeyD']||keys['ArrowRight']) move.addScaledVector(right, spd);
+  if(keys['Space'])                    move.y += spd;
+  if(keys['ShiftLeft']||keys['KeyC'])  move.y -= spd;
+
+  move.addScaledVector(fwd,   -sJoy.y * spd);
+  move.addScaledVector(right,  sJoy.x * spd);
+
+  if(jumpHeld)  move.y += spd;
+  if(sneakHeld) move.y -= spd;
+
+  camera.position.add(move);
+  applyCamera();
+}
+
+function onResize() {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  processInput();
+  renderer.render(scene, camera);
+}
+
+/* ====== 模型加载 ====== */
+function clearModel() {
+  if(!model) return;
+  scene.remove(model);
+  model.traverse(c=>{
+    if(c.isMesh){
+      c.geometry?.dispose();
+      if(c.material)(Array.isArray(c.material)?c.material:[c.material]).forEach(m=>{m.dispose?.();if(m.map)m.map.dispose?.();});
+    }
+  });
+  model=null;
+}
+
+function fitCamera(obj) {
+  const box = new THREE.Box3().setFromObject(obj);
+  const size = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z);
+  baseSpeed = maxDim * 0.018;
+
+  const dist = maxDim * 1.6;
+  camera.position.set(dist*0.5, dist*0.35, dist*0.75);
+  lookAtTarget(new THREE.Vector3(0,0,0));
+
+  camera.near = maxDim*0.0001;
+  camera.far  = maxDim*200;
+  camera.updateProjectionMatrix();
+
+  scene.remove(scene.getObjectByName('__grid__'));
+  scene.remove(scene.getObjectByName('__axes__'));
+  const g = new THREE.GridHelper(maxDim*4,20,0x333333,0x1a1a1a); g.name='__grid__'; scene.add(g);
+  const a = new THREE.AxesHelper(maxDim*0.12); a.name='__axes__'; scene.add(a);
+
+  scene.children.forEach(c=>{
+    if(c.isDirectionalLight){
+      c.position.set(maxDim*5,maxDim*10,maxDim*7);
+      const s=maxDim*5;
+      Object.assign(c.shadow.camera,{left:-s,right:s,top:s,bottom:-s,far:maxDim*50});
+      c.shadow.camera.updateProjectionMatrix();
+    }
+  });
+}
+
+function loadFile(file) {
+  const name=file.name;
+  const ext=name.split('.').pop().toLowerCase();
+  if(!['glb','gltf','fbx','obj'].includes(ext)){alert('不支持的格式');return;}
+
+  const mb = file.size/1048576;
+  if(mb>150 && !confirm('文件较大('+mb.toFixed(0)+'MB)，移动端可能卡顿。\n建议压缩后再试，仍要加载吗？')) return;
+
+  clearModel();
+  currentFile = file;
+  if(renderer.info) renderer.info.reset();
+  $('uploadPage').classList.add('hide');
+  $('loader').classList.add('show');
+  $('pbar').style.width='0%';
+
+  const url=URL.createObjectURL(file);
+  const revoke=()=>{try{URL.revokeObjectURL(url)}catch(e){}};
+  const onProg=e=>{if(e.lengthComputable)$('pbar').style.width=(e.loaded/e.total*100).toFixed(0)+'%';};
+
+  const onDone=obj=>{
+    model=obj; scene.add(obj);
+    obj.traverse(n=>{if(n.isMesh){n.castShadow=true;n.receiveShadow=true;}});
+    fitCamera(obj);
+    updateFakeShadow();
+    revoke();
+    $('loader').classList.remove('show');
+    $('pbar').style.width='100%';
+    setTimeout(()=>$('pbar').style.width='0%',400);
+    $('mName').textContent=name.replace(/\.(glb|gltf|fbx|obj)$/i,'');
+    $('fmtPill').style.display=''; $('fmtPill').textContent=ext.toUpperCase();
+  };
+
+  const onErr=err=>{
+    revoke();
+    $('loader').classList.remove('show');
+    $('pbar').style.width='0%';
+    alert('加载失败: '+(err?.message||'未知'));
+    $('uploadPage').classList.remove('hide');
+  };
+
+  const loader=makeLoader(ext);
+  if(ext==='glb'||ext==='gltf') loader.load(url,g=>onDone(g.scene),onProg,onErr);
+  else loader.load(url,onDone,onProg,onErr);
+}
+
+function makeLoader(ext) {
+  if(ext==='glb'||ext==='gltf'){
+    const l=new GLTFLoader();
+    const d=new DRACOLoader();d.setDecoderPath('https://unpkg.com/three@0.168.0/examples/jsm/libs/draco/');
+    l.setDRACOLoader(d);return l;
+  }
+  if(ext==='fbx') return new FBXLoader();
+  if(ext==='obj') return new OBJLoader();
+}
+
+/* ====== 上传 ====== */
+$('uploadCard').onclick=()=>$('fileInput').click();
+$('uploadCard').ondragover=e=>{e.preventDefault();$('uploadCard').style.borderColor='var(--accent)';};
+$('uploadCard').ondragleave=()=>{$('uploadCard').style.borderColor='';};
+$('uploadCard').ondrop=e=>{e.preventDefault();$('uploadCard').style.borderColor='';if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0]);};
+$('fileInput').onchange=e=>{if(e.target.files[0])loadFile(e.target.files[0]);};
+document.ondragover=e=>e.preventDefault();
+document.ondrop=e=>{e.preventDefault();if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0]);};
+
+/* ====== 自动加载 ====== */
+async function tryAutoLoad(){
+  const p=new URLSearchParams(location.search);
+  const mp=p.get('model');
+  const list=mp?[mp]:['model.glb','model.fbx','model.obj'];
+  for(const path of list){
+    try{
+      const r=await fetch(path,{method:'HEAD'});
+      if(!r.ok) continue;
+      $('uploadPage').classList.add('hide');
+      $('loader').classList.add('show');
+      $('pbar').style.width='30%';
+      const ext=path.split('.').pop().toLowerCase();
+      const loader=makeLoader(ext);
+      const done=result=>{
+        const obj=(ext==='glb'||ext==='gltf')?result.scene:result;
+        model=obj;scene.add(obj);
+        obj.traverse(n=>{if(n.isMesh){n.castShadow=true;n.receiveShadow=true;}});
+        fitCamera(obj);
+        updateFakeShadow();
+        $('loader').classList.remove('show');$('pbar').style.width='0%';
+        $('mName').textContent=path.split('/').pop().replace(/\.(glb|gltf|fbx|obj)$/i,'');
+        $('fmtPill').style.display='';$('fmtPill').textContent=ext.toUpperCase();
+      };
+      const fail=()=>{$('loader').classList.remove('show');$('uploadPage').classList.remove('hide');};
+      loader.load(path,done,e=>{if(e.lengthComputable)$('pbar').style.width=(e.loaded/e.total*100)+'%';},fail);
+      return;
+    }catch(e){continue;}
+  }
+}
+
+init();
+tryAutoLoad();
+</script>
+</body>
+</html>
