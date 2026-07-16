@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小千 | 活动策划作品集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   CSS VARIABLES & RESET
+   ============================================ */
+:root {
+  --bg-deep: #06060b;
+  --bg-dark: #0c0c14;
+  --bg-card: #10101c;
+  --bg-elevated: #161625;
+  --accent-cyan: #00e5ff;
+  --accent-purple: #7c4dff;
+  --accent-pink: #ff4081;
+  --accent-green: #76ff03;
+  --text-primary: #e8eaed;
+  --text-secondary: #8a8f98;
+  --text-muted: #4a4f58;
+  --glass-bg: rgba(6, 6, 11, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  --font-body: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-display: 'Orbitron', var(--font-body);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+html { background: var(--bg-deep); }
+
+body {
+  font-family: var(--font-body);
+  background: transparent;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ============================================
+   STATIC PARTICLE FIELD (CSS-only, no JS, no animation)
+   ============================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(0,229,255,0.5) 0.9px, transparent 1.4px),
+    radial-gradient(circle at 78% 32%, rgba(0,229,255,0.4) 0.9px, transparent 1.4px),
+    radial-gradient(circle at 45% 65%, rgba(157,78,221,0.45) 0.9px, transparent 1.4px),
+    radial-gradient(circle at 25% 88%, rgba(0,229,255,0.35) 0.9px, transparent 1.4px),
+    radial-gradient(circle at 88% 78%, rgba(157,78,221,0.4) 0.9px, transparent 1.4px);
+  background-size: 220px 220px, 280px 280px, 320px 320px, 260px 260px, 240px 240px;
+  background-position: 0 0, 110px 110px, 60px 60px, 130px 130px, 80px 80px;
+  background-attachment: fixed;
+  background-repeat: repeat;
+  opacity: 0.85;
+}
+
+/* 顶部细网格叠加（径向遮罩让中心清晰、边缘淡出） */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-attachment: fixed;
+  mask-image: radial-gradient(ellipse at center, black 0%, black 35%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 0%, black 35%, transparent 80%);
+}
+
+a { color: inherit; text-decoration: none; }
+img, video { max-width: 100%; display: block; }
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+
+::selection { background: var(--accent-cyan); color: #000; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 2px; }
+
+/* ============================================
+   STATIC TECH DECORATIONS
+   ============================================ */
+
+/* Decorative grid background (used by hero and section headings) */
+.tech-grid-bg {
+  background-image:
+    linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Corner brackets for cards & frames */
+.tech-frame {
+  position: relative;
+}
+.tech-frame::before,
+.tech-frame::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--accent-cyan);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.tech-frame::before {
+  top: 8px; left: 8px;
+  border-right: 0; border-bottom: 0;
+}
+.tech-frame::after {
+  bottom: 8px; right: 8px;
+  border-left: 0; border-top: 0;
+}
+
+/* Section eyebrow number + label */
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--accent-cyan);
+  margin-bottom: 14px;
+}
+.section-eyebrow::before {
+  content: attr(data-num);
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid rgba(0,229,255,0.3);
+  border-radius: 3px;
+  font-size: 11px;
+  color: var(--accent-cyan);
+  background: rgba(0,229,255,0.04);
+}
+.section-eyebrow::after {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent-cyan), transparent);
+}
+
+/* Divider with center marker */
+.tech-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 60px auto;
+  max-width: 600px;
+  opacity: 0.4;
+}
+.tech-divider::before,
+.tech-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+}
+.tech-divider > span {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--accent-cyan);
+}
+
+/* Tech chip - inline label with bracket markers */
+.tech-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 3px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--accent-cyan);
+  background: rgba(0,229,255,0.03);
+}
+.tech-chip::before { content: '<'; opacity: 0.6; }
+.tech-chip::after { content: '/>'; opacity: 0.6; }
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 50%, var(--accent-pink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 4px;
+  padding: 6px 14px;
+  margin-bottom: 18px;
+  font-weight: 600;
+  background: rgba(0,229,255,0.04);
+}
+
+.section-tag::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-cyan);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-header-num {
+  position: absolute;
+  top: -20px;
+  right: 0;
+  font-family: var(--font-display);
+  font-size: 80px;
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(0,229,255,0.08);
+  letter-spacing: -2px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 18px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav.scrolled {
+  padding: 12px 48px;
+  background: rgba(6, 6, 11, 0.88);
+  backdrop-filter: blur(24px) saturate(1.2);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+}
+.nav-logo span {
+  color: var(--accent-cyan);
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+}
+
+.nav-links a {
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--accent-cyan);
+}
+
+.nav-links a:hover { color: var(--text-primary); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-mobile-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+}
+.nav-mobile-toggle span {
+  width: 22px; height: 2px;
+  background: var(--text-primary);
+  border-radius: 1px;
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+  position: relative;
+  height: 65vh;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('./img/stage_5_imeik_reception.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.25) blur(3px) saturate(1.3);
+  transform: scale(1.05);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at center, #000 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at center, #000 30%, transparent 80%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-corners {
+  position: absolute;
+  inset: 24px;
+  pointer-events: none;
+  z-index: 2;
+}
+.hero-corners::before,
+.hero-corners::after,
+.hero-corners > i::before,
+.hero-corners > i::after {
+  content: '';
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--accent-cyan);
+  opacity: 0.7;
+}
+.hero-corners::before {
+  top: 0; left: 0;
+  border-right: 0; border-bottom: 0;
+}
+.hero-corners::after {
+  top: 0; right: 0;
+  border-left: 0; border-bottom: 0;
+}
+.hero-corners > i::before {
+  bottom: 0; left: 0;
+  border-right: 0; border-top: 0;
+}
+.hero-corners > i::after {
+  bottom: 0; right: 0;
+  border-left: 0; border-top: 0;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(6,6,11,0.6) 0%,
+    rgba(6,6,11,0.3) 40%,
+    rgba(6,6,11,0.7) 80%,
+    rgba(6,6,11,1) 100%
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 760px;
+  padding: 0 24px;
+}
+
+.hero-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+.hero-status::before,
+.hero-status::after {
+  content: '';
+  flex: 1;
+  max-width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.4), transparent);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 20px;
+  padding: 6px 20px;
+  margin-bottom: 28px;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent-cyan);
+  border-radius: 50%;
+}
+
+.hero-title {
+  font-family: var(--font-body);
+  font-size: clamp(24px, 3.5vw, 38px);
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.hero-title strong {
+  font-weight: 600;
+  color: var(--accent-cyan);
+}
+
+.hero-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+
+.hero-scroll {
+}
+
+.scroll-arrow {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.scroll-arrow:hover { color: var(--accent-cyan); }
+
+.scroll-arrow svg {
+  width: 20px; height: 20px;
+}
+
+.scroll-arrow-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 22px;
+  border: 1px solid rgba(0,229,255,0.3);
+  border-radius: 4px;
+  background: rgba(0,229,255,0.04);
+  color: var(--accent-cyan);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+.scroll-arrow-wrap::before {
+  content: '//';
+  opacity: 0.6;
+  font-weight: 700;
+}
+.scroll-arrow-wrap::after {
+  content: '';
+  width: 22px; height: 1px;
+  background: var(--accent-cyan);
+}
+
+
+
+/* ============================================
+   STAGE DESIGN GALLERY SECTION
+   ============================================ */
+.stage-gallery {
+  padding: 100px 0 60px;
+}
+
+/* Filter Tabs */
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 56px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 28px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+  background: rgba(255,255,255,0.03);
+}
+
+.filter-btn.active {
+  color: #000;
+  background: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* Gallery Grid - Masonry Style */
+.gallery-grid {
+  columns: 3;
+  column-gap: 24px;
+}
+
+/* Gallery Card */
+.gallery-card {
+  break-inside: avoid;
+  margin-bottom: 24px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.gallery-card::before,
+.gallery-card::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--accent-cyan);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 4;
+}
+.gallery-card::before {
+  top: 8px; left: 8px;
+  border-right: 0; border-bottom: 0;
+}
+.gallery-card::after {
+  bottom: 8px; right: 8px;
+  border-left: 0; border-top: 0;
+}
+
+.gallery-card-index {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--accent-cyan);
+  background: rgba(6,6,11,0.7);
+  backdrop-filter: blur(6px);
+  padding: 4px 8px;
+  border-radius: 3px;
+  border: 1px solid rgba(0,229,255,0.25);
+}
+
+.gallery-card:hover {
+  border-color: rgba(0,229,255,0.35);
+  box-shadow: 0 16px 40px rgba(0,229,255,0.08);
+}
+
+.gallery-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.gallery-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 35%, rgba(6,6,11,0.9) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  pointer-events: none;
+}
+
+.gallery-card-overlay h3 {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.gallery-card-bottom {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.gallery-card-bottom h3 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gallery-card-tag {
+  font-size: 11px;
+  color: var(--accent-cyan);
+  background: rgba(0,229,255,0.08);
+  border: 1px solid rgba(0,229,255,0.15);
+  border-radius: 12px;
+  padding: 3px 10px;
+  white-space: nowrap;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* Card filter states */
+.gallery-card.filtering-out {
+  display: none;
+}
+
+
+/* ============================================
+   VIDEO WORKS SECTION
+   ============================================ */
+.video-works {
+  padding: 60px 0 120px;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.video-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+.video-card::before,
+.video-card::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 5;
+}
+.video-card::before {
+  top: 10px; left: 10px;
+  border-top: 1.5px solid var(--accent-cyan);
+  border-left: 1.5px solid var(--accent-cyan);
+}
+.video-card::after {
+  bottom: 10px; right: 10px;
+  border-bottom: 1.5px solid var(--accent-cyan);
+  border-right: 1.5px solid var(--accent-cyan);
+}
+
+.video-card:hover {
+  border-color: rgba(0,229,255,0.25);
+  box-shadow: 0 8px 40px rgba(0,229,255,0.12), inset 0 0 60px rgba(0,229,255,0.03);
+}
+
+.video-card-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #0a0a1a 0%, #0d1025 40%, #12082a 70%, #0a0a1a 100%);
+  overflow: hidden;
+}
+
+/* Scanline overlay */
+.video-card-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.015) 2px,
+    rgba(255,255,255,0.015) 4px
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Bottom gradient fade */
+.video-card-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(6,6,11,0.7) 100%);
+  z-index: 1;
+}
+
+.video-card-cover img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.video-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(0,229,255,0.1);
+  border: 2px solid rgba(0,229,255,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 30px rgba(0,229,255,0.3), inset 0 0 20px rgba(0,229,255,0.1);
+}
+
+.video-play-btn::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 0 10px 18px;
+  border-color: transparent transparent transparent var(--accent-cyan);
+  margin-left: 4px;
+}
+
+.video-card:hover .video-play-btn {
+  background: rgba(0,229,255,0.2);
+  box-shadow: 0 0 40px rgba(0,229,255,0.5), inset 0 0 30px rgba(0,229,255,0.15);
+}
+
+.video-card-index {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--accent-cyan);
+  background: rgba(6,6,11,0.8);
+  backdrop-filter: blur(6px);
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,229,255,0.2);
+}
+
+.video-card-info {
+  padding: 20px 22px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(180deg, rgba(16,16,28,0.9) 0%, var(--bg-card) 100%);
+}
+
+.video-card-info h3 {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.video-card-info p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.video-card-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 4px 12px;
+  border: 1px solid rgba(0,229,255,0.2);
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--accent-cyan);
+  background: rgba(0,229,255,0.06);
+  white-space: nowrap;
+}
+.video-card-meta::before {
+  content: '▶';
+  font-size: 8px;
+}
+
+/* ============================================
+   VIDEO MODAL
+   ============================================ */
+.video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(6,6,11,0.95);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.video-modal-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.modal-close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 18px;
+  background: none;
+  cursor: pointer;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: var(--accent-cyan);
+  color: var(--text-primary);
+}
+
+.video-modal-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 32px;
+  min-height: 0;
+}
+
+.video-modal-body video {
+  display: block;
+  width: 100%;
+  max-width: 1280px;
+  max-height: 80vh;
+  min-height: 360px;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #000;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  outline: none;
+}
+
+.video-modal-body video::-webkit-media-controls-panel {
+  background: rgba(0,0,0,0.6);
+}
+
+/* ============================================
+   LIGHTBOX
+   ============================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lightbox.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  transform: scale(0.95);
+}
+
+.lightbox.open .lightbox-img {
+  transform: scale(1);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+
+.lightbox-close:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: var(--accent-cyan);
+}
+
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+
+.lightbox-arrow:hover {
+  background: rgba(0,229,255,0.15);
+  border-color: var(--accent-cyan);
+}
+
+.lightbox-prev { left: 24px; }
+.lightbox-next { right: 24px; }
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+}
+
+.lightbox-title {
+  position: absolute;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+}
+
+/* ============================================
+   VR SECTION
+   ============================================ */
+.vr-section {
+  padding: 100px 0;
+  background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-dark) 50%, var(--bg-deep) 100%);
+}
+
+.vr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.vr-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 28px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.vr-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,229,255,0.04) 0%, rgba(124,77,255,0.04) 100%);
+  opacity: 0;
+}
+
+.vr-card:hover {
+  border-color: rgba(0,229,255,0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+}
+
+.vr-card:hover::before { opacity: 1; }
+
+.vr-card-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(124,77,255,0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  font-size: 22px;
+}
+
+.vr-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.vr-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  position: relative;
+}
+
+.vr-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  position: relative;
+}
+
+.vr-card-actions button {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.vr-btn-preview {
+  background: rgba(0,229,255,0.1);
+  border: 1px solid rgba(0,229,255,0.25);
+  color: var(--accent-cyan);
+}
+.vr-btn-preview:hover {
+  background: rgba(0,229,255,0.2);
+}
+
+.vr-btn-open {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+.vr-btn-open:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-primary);
+}
+
+/* VR Modal */
+.vr-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(6,6,11,0.95);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.vr-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.vr-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.vr-modal-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.vr-modal-header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.vr-modal-header-actions button {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.vr-modal-body {
+  flex: 1;
+  padding: 24px 32px;
+}
+
+.vr-modal-body iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 70vh;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: #000;
+}
+
+/* ============================================
+   ABOUT SECTION
+   ============================================ */
+.about {
+  padding: 100px 0;
+  position: relative;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(0,229,255,0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(124,77,255,0.04) 0%, transparent 50%);
+}
+
+.about-content {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px 32px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: rgba(16,16,28,0.4);
+  position: relative;
+}
+
+.about-content::before,
+.about-content::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--accent-cyan);
+  opacity: 0.5;
+}
+.about-content::before {
+  top: -1px; left: -1px;
+  border-right: 0; border-bottom: 0;
+}
+.about-content::after {
+  bottom: -1px; right: -1px;
+  border-left: 0; border-top: 0;
+}
+
+.about-text {
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.about-text strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.about-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.about-keyword {
+  padding: 8px 18px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.02);
+}
+
+.about-keyword:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  background: rgba(0,229,255,0.04);
+}
+
+/* ============================================
+   CONTACT SECTION
+   ============================================ */
+.contact {
+  padding: 80px 0 60px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.contact-grid {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+}
+
+.contact-item {
+  text-align: center;
+  min-width: 200px;
+  padding: 32px 24px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: rgba(16,16,28,0.4);
+  position: relative;
+  cursor: pointer;
+}
+
+.contact-item::before,
+.contact-item::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--accent-cyan);
+  opacity: 0.6;
+}
+.contact-item::before {
+  top: 6px; left: 6px;
+  border-right: 0; border-bottom: 0;
+}
+.contact-item::after {
+  bottom: 6px; right: 6px;
+  border-left: 0; border-top: 0;
+}
+.contact-item:hover {
+  border-color: rgba(0,229,255,0.3);
+}
+.contact-item:hover::before,
+.contact-item:hover::after { opacity: 1; }
+
+.contact-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(0,229,255,0.08);
+  border: 1px solid rgba(0,229,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  font-size: 20px;
+}
+
+.contact-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--accent-cyan);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.contact-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.contact-value-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+  user-select: all;
+  cursor: text;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 32px 0;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  font-family: var(--font-display);
+  position: relative;
+}
+.footer::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+  .gallery-grid { columns: 2; }
+  .video-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 20px; }
+  .nav {
+    padding: 12px 20px;
+    background: rgba(6, 6, 11, 0.6);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
+  .nav.scrolled {
+    padding: 10px 20px;
+    background: rgba(6, 6, 11, 0.92);
+    backdrop-filter: blur(28px) saturate(1.6);
+    -webkit-backdrop-filter: blur(28px) saturate(1.6);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .nav-links { display: none; }
+  .nav-mobile-toggle {
+    display: flex;
+    width: 44px; height: 44px;
+    align-items: center; justify-content: center;
+    margin: -10px; /* offset so 44x44 hit area */
+  }
+  .nav-mobile-toggle span {
+    width: 22px; height: 2px;
+  }
+
+  .nav-links.mobile-open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: rgba(6,6,11,0.96);
+    backdrop-filter: blur(28px) saturate(1.4);
+    -webkit-backdrop-filter: blur(28px) saturate(1.4);
+    padding: 12px 20px 20px;
+    gap: 0;
+    border-bottom: 1px solid var(--glass-border);
+  }
+  /* Larger tap targets for mobile nav links */
+  .nav-links.mobile-open a {
+    padding: 14px 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .nav-links.mobile-open a:last-child {
+    border-bottom: none;
+  }
+
+  .hero { height: 55vh; min-height: 360px; }
+  .section-header { margin-bottom: 36px; }
+  .section-title { font-size: 26px; letter-spacing: 1.5px; }
+  .section-subtitle { font-size: 14px; }
+  .stage-gallery { padding: 60px 0 40px; }
+  .video-works { padding: 40px 0 80px; }
+  .gallery-grid { columns: 1; column-gap: 16px; }
+  .gallery-card { margin-bottom: 16px; }
+  .video-grid { grid-template-columns: 1fr; gap: 16px; }
+  .vr-section { padding: 60px 0; }
+  .about { padding: 60px 0; }
+  .about-text { font-size: 15px; line-height: 1.85; }
+
+  .contact-grid { gap: 32px; }
+  .filter-bar { gap: 6px; margin-bottom: 32px; }
+  .filter-btn {
+    padding: 10px 16px;
+    font-size: 12px;
+    min-height: 40px;
+  }
+
+  /* Gallery card: mobile-friendly tap area & always-visible title */
+  .gallery-card-overlay {
+    opacity: 1;
+    background: linear-gradient(180deg, transparent 50%, rgba(6,6,11,0.88) 100%);
+  }
+  .gallery-card-bottom {
+    padding: 12px 16px;
+  }
+  .gallery-card-bottom h3 { font-size: 13px; }
+
+  /* Lightbox - bigger tap targets, hide counter if too cramped */
+  .lightbox-close {
+    width: 48px; height: 48px;
+    top: 16px; right: 16px;
+    font-size: 22px;
+  }
+  .lightbox-arrow {
+    width: 48px; height: 48px;
+    font-size: 24px;
+  }
+  .lightbox-prev { left: 12px; }
+  .lightbox-next { right: 12px; }
+  .lightbox-title { font-size: 14px; bottom: 56px; padding: 0 16px; text-align: center; }
+  .lightbox-counter { bottom: 24px; font-size: 12px; }
+
+  /* Video modal - true fullscreen on mobile */
+  .video-modal-header {
+    padding: 12px 16px;
+    min-height: 56px;
+  }
+  .video-modal-header h3 { font-size: 14px; }
+  .video-modal-header .modal-close-btn {
+    width: 44px; height: 44px;
+    font-size: 20px;
+  }
+  .video-modal-body {
+    padding: 0;
+    align-items: stretch;
+  }
+  .video-modal-body video {
+    max-width: 100%;
+    max-height: none;
+    min-height: 240px;
+    aspect-ratio: 16 / 9;
+    border-radius: 0;
+  }
+
+  /* VR modal on mobile */
+  .vr-modal-header {
+    padding: 12px 16px;
+    min-height: 56px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .vr-modal-header h3 { font-size: 14px; }
+  .vr-modal-body { padding: 12px; }
+  .vr-modal-body iframe { min-height: 60vh; }
+  .vr-modal-header-actions button {
+    padding: 8px 14px;
+    min-height: 40px;
+  }
+  .vr-modal-header-actions .detail-close {
+    width: 40px; height: 40px;
+  }
+
+  /* Contact items touch targets */
+  .contact-icon {
+    width: 52px; height: 52px;
+    font-size: 22px;
+  }
+  .contact-value { font-size: 14px; }
+
+  /* Filter bar - prevent scroll-overflow on small screens */
+  .filter-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding-bottom: 4px;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+
+  /* About keywords wrap nicely */
+  .about-keywords { gap: 8px; }
+  .about-keyword {
+    padding: 8px 18px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title { font-size: 20px; letter-spacing: 1px; }
+  .hero-subtitle { font-size: 13px; line-height: 1.7; }
+  .section-title { font-size: 22px; }
+  .vr-grid { grid-template-columns: 1fr; gap: 16px; }
+  .vr-card { padding: 22px; }
+  .gallery-card-tag { font-size: 10px; padding: 2px 8px; }
+  .filter-btn { padding: 8px 14px; font-size: 11px; }
+  .lightbox-img { max-width: 95vw; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     NAVIGATION
+     ============================================ -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">小千 <span>|</span> 活动策划</div>
+  <div class="nav-links" id="navLinks">
+    <a href="#stage-gallery">舞美设计</a>
+    <a href="#video-works">视频作品</a>
+    <a href="#vr">VR全景</a>
+    <a href="#about">关于我</a>
+    <a href="#contact">联系</a>
+  </div>
+  <button class="nav-mobile-toggle" id="mobileToggle" aria-label="菜单">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-corners"><i></i></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-status">// STATUS · ONLINE</div>
+    <h1 class="hero-title">专注<strong>品牌发布会</strong> · <strong>年会盛典</strong> · <strong>沉浸式舞美设计</strong></h1>
+    <p class="hero-subtitle">从创意概念到3D可视化落地，用光影讲述品牌故事</p>
+    <div class="hero-scroll">
+      <a href="#stage-gallery" class="scroll-arrow-wrap">
+        <span>查看作品</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SECTION DIVIDER
+     ============================================ -->
+<div class="tech-divider"><span>★ ★ ★</span></div>
+
+<!-- ============================================
+     STAGE DESIGN GALLERY
+     ============================================ -->
+<section class="stage-gallery" id="stage-gallery">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-header-num">01</div>
+      <div class="section-tag">Stage Design</div>
+      <h2 class="section-title gradient-text">舞美设计</h2>
+      <p class="section-subtitle">品牌发布会·年会·高校活动·展区·灯光</p>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-filter="全部">全部</button>
+      <button class="filter-btn" data-filter="品牌发布会">品牌发布会</button>
+      <button class="filter-btn" data-filter="年会盛典">年会盛典</button>
+      <button class="filter-btn" data-filter="高校活动">高校活动</button>
+      <button class="filter-btn" data-filter="品牌展区">品牌展区</button>
+      <button class="filter-btn" data-filter="灯光秀">灯光秀</button>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="gallery-grid" id="galleryGrid">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     VIDEO WORKS
+     ============================================ -->
+<section class="video-works" id="video-works">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-header-num">02</div>
+      <div class="section-tag">Video Works</div>
+      <h2 class="section-title gradient-text">视频作品</h2>
+      <p class="section-subtitle">活动现场实录与舞美效果展示</p>
+    </div>
+    <div class="video-grid" id="videoGrid">
+      <!-- Video cards injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     VR SECTION
+     ============================================ -->
+<section class="vr-section" id="vr">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-header-num">03</div>
+      <div class="section-tag">VR Panorama</div>
+      <h2 class="section-title gradient-text">VR全景案例</h2>
+      <p class="section-subtitle">沉浸式空间漫游，身临其境的视觉体验</p>
+    </div>
+    <div class="vr-grid" id="vrGrid">
+      <!-- VR cards injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     ABOUT SECTION
+     ============================================ -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-header-num">04</div>
+      <div class="section-tag">About Me</div>
+      <h2 class="section-title gradient-text">关于我</h2>
+    </div>
+    <div class="about-content">
+      <p class="about-text">
+        活动策划从业者，专注于<strong>品牌发布会、年会盛典、高校活动</strong>的创意策划与舞美设计。
+        擅长将品牌理念转化为可感知的空间语言——从创意概念的构思，到3D可视化方案的呈现，
+        再到活动现场的精准落地，用光影与空间的组合讲述属于品牌的故事。
+      </p>
+      <div class="about-keywords">
+        <span class="about-keyword">3D可视化</span>
+        <span class="about-keyword">舞美设计</span>
+        <span class="about-keyword">品牌视觉</span>
+        <span class="about-keyword">项目管理</span>
+        <span class="about-keyword">创意策划</span>
+        <span class="about-keyword">空间设计</span>
+        <span class="about-keyword">灯光设计</span>
+        <span class="about-keyword">沉浸式体验</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     CONTACT SECTION
+     ============================================ -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-header-num">05</div>
+      <div class="section-tag">Get In Touch</div>
+      <h2 class="section-title gradient-text">联系我</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="contact-icon">📱</div>
+        <div class="contact-label">电话</div>
+        <div class="contact-value">18711992622</div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">💬</div>
+        <div class="contact-label">微信</div>
+        <div class="contact-value">申千</div>
+        <div class="contact-value-sub">VSL1742436466</div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🔗</div>
+        <div class="contact-label">飞书</div>
+        <div class="contact-value">申千</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>© 2026 小千 · 活动策划作品集</p>
+  </div>
+</footer>
+
+<!-- ============================================
+     LIGHTBOX
+     ============================================ -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">✕</button>
+  <button class="lightbox-arrow lightbox-prev" id="lightboxPrev">‹</button>
+  <button class="lightbox-arrow lightbox-next" id="lightboxNext">›</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <div class="lightbox-title" id="lightboxTitle"></div>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
+<!-- ============================================
+     VR MODAL
+     ============================================ -->
+<div class="vr-modal" id="vrModal">
+  <div class="vr-modal-header">
+    <h3 id="vrModalTitle">VR全景</h3>
+    <div class="vr-modal-header-actions">
+      <button class="vr-btn-open" id="vrOpenNew">↗ 新窗口打开</button>
+      <button class="detail-close" id="vrClose" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:18px;">✕</button>
+    </div>
+  </div>
+  <div class="vr-modal-body">
+    <iframe id="vrIframe" src="" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- ============================================
+     VIDEO MODAL
+     ============================================ -->
+<div class="video-modal" id="videoModal">
+  <div class="video-modal-header">
+    <h3 id="videoModalTitle"></h3>
+    <button class="modal-close-btn" id="videoModalClose">✕</button>
+  </div>
+  <div class="video-modal-body">
+    <video id="videoModalPlayer" controls playsinline preload="metadata" referrerpolicy="no-referrer"></video>
+  </div>
+</div>
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+// =====================
+// DATA - Gallery Images
+// =====================
+const galleryImages = [
+  {
+    id: 1,
+    title: '爱美客2026全系新品发布会',
+    category: '品牌发布会',
+    image: './img/stage_1_imeik_mainstage.jpg'
+  },
+  {
+    id: 2,
+    title: '元源出 品牌展区',
+    category: '品牌展区',
+    image: './img/stage_2_yuanyuan.jpg'
+  },
+  {
+    id: 3,
+    title: 'Hutox 品牌展区',
+    category: '品牌展区',
+    image: './img/stage_3_hutox.jpg'
+  },
+  {
+    id: 4,
+    title: 'HISHAPERF 嗨塑 品牌展区',
+    category: '品牌展区',
+    image: './img/stage_4_hishaperf.jpg'
+  },
+  {
+    id: 5,
+    title: '爱美客2026 签到处',
+    category: '品牌展区',
+    image: './img/stage_5_imeik_reception.jpg'
+  },
+  {
+    id: 6,
+    title: '华南师范大学 迎新晚会',
+    category: '高校活动',
+    image: './img/stage_6_scnu.jpg'
+  },
+  {
+    id: 7,
+    title: '复星雅立峰生物 年度服务商年会',
+    category: '年会盛典',
+    image: './img/stage_7_fosun.jpg'
+  },
+  {
+    id: 8,
+    title: '顺丰速运 全球供应商大会',
+    category: '年会盛典',
+    image: './img/stage_8_sfexpress.jpg'
+  },
+  {
+    id: 9,
+    title: '灯光秀舞台',
+    category: '灯光秀',
+    image: './img/stage_9_lightshow.jpg'
+  }
+];
+
+// =====================
+// DATA - Video Works
+// =====================
+const videoWorks = [
+  {
+    id: 1,
+    title: '天圆地方开场预演',
+    description: '品牌发布会现场舞美效果展示',
+    src: './video_1_yuyan.mp4',
+    type: 'video/mp4',
+  },
+  {
+    id: 2,
+    title: '贝利金杯',
+    description: '年度盛典现场实录',
+    src: './video_2_bl.mp4',
+    type: 'video/mp4',
+  },
+  {
+    id: 3,
+    title: '高达展厅秀',
+    description: '高校晚会现场舞美与灯光',
+    src: './video_3_A1.mp4',
+    type: 'video/mp4',
+  },
+  {
+    id: 4,
+    title: '沃尔玛预演',
+    description: '沃尔玛预演现场效果',
+    src: './video_4_WW.mp4',
+    type: 'video/mp4',
+  },
+  {
+    id: 5,
+    title: '爱美客2026全系新品发布会',
+    description: '主舞台效果完整呈现',
+    src: './video_5_imeik.mp4',
+    type: 'video/mp4',
+  }
+];
+
+// =====================
+// DATA - VR Cases
+// =====================
+const vrCases = [
+  {
+    title: '东海朗庭·全景漫游',
+    description: '地产项目全景漫游体验',
+    url: 'https://vr.3d66.com/next/vr/view/6553127?isMobile=true',
+    icon: '🏠'
+  },
+  {
+    title: 'CIO大会',
+    description: '沉浸式空间VR体验',
+    url: 'https://vr.3d66.com/next/vr/view/7190398?isMobile=true',
+    icon: '🌐'
+  },
+  {
+    title: '他美学',
+    description: '3D全景空间展示',
+    url: 'https://vr.3d66.com/vr/index_detail_6074976.asp',
+    icon: '🏢'
+  },
+  {
+    title: '爱美客全轩医学院',
+    description: '虚拟场景漫游',
+    url: 'https://vr.3d66.com/vr/index_detail_5565917.asp?pageSource=4',
+    icon: '✨'
+  }
+];
+
+// =====================
+// NAVIGATION
+// =====================
+const nav = document.getElementById('nav');
+let lastScroll = 0;
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  nav.classList.toggle('scrolled', scrollY > 60);
+  lastScroll = scrollY;
+}, { passive: true });
+
+// Mobile menu
+const mobileToggle = document.getElementById('mobileToggle');
+const navLinks = document.getElementById('navLinks');
+
+mobileToggle.addEventListener('click', () => {
+  navLinks.classList.toggle('mobile-open');
+});
+
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    navLinks.classList.remove('mobile-open');
+  });
+});
+
+// =====================
+// RENDER GALLERY GRID
+// =====================
+const galleryGrid = document.getElementById('galleryGrid');
+
+function createGalleryCard(item, index) {
+  const card = document.createElement('div');
+  card.className = 'gallery-card';
+  card.dataset.category = item.category;
+  card.dataset.index = index;
+  const num = String(index + 1).padStart(2, '0');
+
+  card.innerHTML = `
+    <img src="${item.image}" alt="${item.title}" loading="lazy">
+    <div class="gallery-card-overlay">
+      <h3>${item.title}</h3>
+    </div>
+    <div class="gallery-card-index">IMG_${num}</div>
+    <div class="gallery-card-bottom">
+      <h3>${item.title}</h3>
+      <span class="gallery-card-tag">${item.category}</span>
+    </div>
+  `;
+
+  card.addEventListener('click', () => openLightbox(index));
+  return card;
+}
+
+function renderGallery() {
+  galleryGrid.innerHTML = '';
+  galleryImages.forEach((item, index) => {
+    galleryGrid.appendChild(createGalleryCard(item, index));
+  });
+}
+
+renderGallery();
+
+// =====================
+// FILTER LOGIC
+// =====================
+const filterBar = document.getElementById('filterBar');
+let currentFilter = '全部';
+
+filterBar.addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+
+  const filter = btn.dataset.filter;
+  if (filter === currentFilter) return;
+
+  currentFilter = filter;
+
+  filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const cards = galleryGrid.querySelectorAll('.gallery-card');
+
+  cards.forEach((card, i) => {
+    const match = filter === '全部' || card.dataset.category === filter;
+
+    if (match) {
+      card.classList.remove('filtering-out');
+      card.style.display = '';
+    } else {
+      card.classList.add('filtering-out');
+      card.style.display = 'none';
+    }
+  });
+
+  setTimeout(() => {
+  }, 600);
+});
+
+// =====================
+// LIGHTBOX
+// =====================
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxTitle = document.getElementById('lightboxTitle');
+const lightboxCounter = document.getElementById('lightboxCounter');
+const lightboxClose = document.getElementById('lightboxClose');
+const lightboxPrev = document.getElementById('lightboxPrev');
+const lightboxNext = document.getElementById('lightboxNext');
+
+let lightboxIndex = 0;
+
+function getVisibleImages() {
+  if (currentFilter === '全部') return galleryImages;
+  return galleryImages.filter(img => img.category === currentFilter);
+}
+
+function openLightbox(globalIndex) {
+  const visible = getVisibleImages();
+  const targetItem = galleryImages[globalIndex];
+  lightboxIndex = visible.findIndex(img => img.id === targetItem.id);
+  if (lightboxIndex === -1) lightboxIndex = 0;
+  updateLightbox();
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function updateLightbox() {
+  const visible = getVisibleImages();
+  const item = visible[lightboxIndex];
+  lightboxImg.src = item.image;
+  lightboxImg.alt = item.title;
+  lightboxTitle.textContent = item.title;
+  lightboxCounter.textContent = `${lightboxIndex + 1} / ${visible.length}`;
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function navigateLightbox(dir) {
+  const visible = getVisibleImages();
+  lightboxIndex = (lightboxIndex + dir + visible.length) % visible.length;
+  updateLightbox();
+}
+
+lightboxClose.addEventListener('click', closeLightbox);
+lightboxPrev.addEventListener('click', () => navigateLightbox(-1));
+lightboxNext.addEventListener('click', () => navigateLightbox(1));
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox) closeLightbox();
+});
+
+// Touch / swipe support for lightbox (mobile)
+(function() {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+  const SWIPE_THRESHOLD = 50; // minimum px to count as a swipe
+
+  lightbox.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  lightbox.addEventListener('touchend', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    const touch = e.changedTouches[0];
+    touchEndX = touch.clientX;
+    touchEndY = touch.clientY;
+
+    const dx = touchEndX - touchStartX;
+    const dy = touchEndY - touchStartY;
+
+    // Only count as horizontal swipe if movement is more horizontal than vertical
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
+      if (dx < 0) {
+        navigateLightbox(1);  // swipe left → next
+      } else {
+        navigateLightbox(-1); // swipe right → prev
+      }
+    }
+  }, { passive: true });
+})();
+
+// =====================
+// RENDER VIDEO GRID (Cover cards with click-to-play modal)
+// =====================
+const videoGrid = document.getElementById('videoGrid');
+
+videoWorks.forEach((video, idx) => {
+  const card = document.createElement('div');
+  card.className = 'video-card';
+  card.dataset.videoIndex = idx;
+  const num = String(idx + 1).padStart(2, '0');
+  card.innerHTML = `
+    <div class="video-card-cover">
+      ${video.poster ? `<img src="${video.poster}" alt="${video.title}" loading="lazy">` : ''}
+      <div class="video-card-index">VID_${num}</div>
+      <div class="video-play-btn"></div>
+    </div>
+    <div class="video-card-info">
+      <div>
+        <h3>${video.title}</h3>
+        <p>${video.description}</p>
+      </div>
+      <span class="video-card-meta">MP4</span>
+    </div>
+  `;
+  card.addEventListener('click', () => openVideoModal(video));
+  videoGrid.appendChild(card);
+});
+
+// =====================
+// VIDEO MODAL
+// =====================
+const videoModal = document.getElementById('videoModal');
+const videoModalTitle = document.getElementById('videoModalTitle');
+const videoModalPlayer = document.getElementById('videoModalPlayer');
+const videoModalClose = document.getElementById('videoModalClose');
+
+function openVideoModal(video) {
+  videoModalTitle.textContent = video.title;
+  videoModalPlayer.removeEventListener('error', videoModalErrorHandler);
+  videoModalPlayer.addEventListener('error', videoModalErrorHandler);
+  videoModalPlayer.src = video.src;
+  videoModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const playPromise = videoModalPlayer.play();
+  if (playPromise && typeof playPromise.catch === 'function') {
+    playPromise.catch(() => { /* 静默忽略，等待用户点播放 */ });
+  }
+}
+function videoModalErrorHandler() {
+  const err = videoModalPlayer.error;
+  const code = err ? err.code : 'unknown';
+  const msg = err ? (err.message || '未知错误') : '视频加载失败';
+  videoModalTitle.textContent = '⚠ 播放失败 (' + code + '): ' + msg;
+  console.error('[VideoModal] 错误 code=' + code + ' src=' + videoModalPlayer.currentSrc, err);
+}
+
+function closeVideoModal() {
+  videoModal.classList.remove('open');
+  videoModalPlayer.pause();
+  videoModalPlayer.removeAttribute('src');
+  videoModalPlayer.load();
+  document.body.style.overflow = '';
+}
+
+videoModalClose.addEventListener('click', closeVideoModal);
+videoModal.addEventListener('click', (e) => {
+  if (e.target === videoModal) closeVideoModal();
+});
+
+// =====================
+// VR SECTION
+// =====================
+const vrGrid = document.getElementById('vrGrid');
+
+vrCases.forEach((vr) => {
+  const card = document.createElement('div');
+  card.className = 'vr-card';
+  card.innerHTML = `
+    <div class="vr-card-icon">${vr.icon}</div>
+    <h3>${vr.title}</h3>
+    <p>${vr.description}</p>
+    <div class="vr-card-actions">
+      <button class="vr-btn-preview" data-url="${vr.url}" data-title="${vr.title}">▶ 预览</button>
+      <button class="vr-btn-open" onclick="window.open('${vr.url}', '_blank')">↗ 新窗口</button>
+    </div>
+  `;
+  vrGrid.appendChild(card);
+});
+
+// VR Modal
+const vrModal = document.getElementById('vrModal');
+const vrModalTitle = document.getElementById('vrModalTitle');
+const vrIframe = document.getElementById('vrIframe');
+const vrClose = document.getElementById('vrClose');
+const vrOpenNew = document.getElementById('vrOpenNew');
+let currentVRUrl = '';
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.vr-btn-preview');
+  if (!btn) return;
+
+  currentVRUrl = btn.dataset.url;
+  vrModalTitle.textContent = btn.dataset.title;
+  vrIframe.src = currentVRUrl;
+  vrOpenNew.onclick = () => window.open(currentVRUrl, '_blank');
+  vrModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+});
+
+function closeVRModal() {
+  vrModal.classList.remove('open');
+  vrIframe.src = '';
+  document.body.style.overflow = '';
+  currentVRUrl = '';
+}
+
+vrClose.addEventListener('click', closeVRModal);
+vrModal.addEventListener('click', (e) => {
+  if (e.target === vrModal) closeVRModal();
+});
+
+// =====================
+// KEYBOARD NAVIGATION
+// =====================
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeLightbox();
+    closeVRModal();
+    closeVideoModal();
+  }
+  if (lightbox.classList.contains('open')) {
+    if (e.key === 'ArrowLeft') navigateLightbox(-1);
+    if (e.key === 'ArrowRight') navigateLightbox(1);
+  }
+});
+
+// =====================
+// SMOOTH SCROLL for anchors
+// =====================
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(anchor.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
