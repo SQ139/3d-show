@@ -1096,91 +1096,143 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 
 .vr-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
 }
 
 .vr-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  padding: 28px;
+  border-radius: 16px;
+  padding: 0;
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
-.vr-card::before {
+/* scanline texture */
+.vr-card::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0,229,255,0.04) 0%, rgba(124,77,255,0.04) 100%);
-  opacity: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,229,255,0.015) 2px,
+    rgba(0,229,255,0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* top gradient bar */
+.vr-card-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+  opacity: 0.7;
 }
 
 .vr-card:hover {
-  border-color: rgba(0,229,255,0.2);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+  border-color: rgba(0,229,255,0.25);
+  box-shadow: 0 0 30px rgba(0,229,255,0.06), 0 20px 60px rgba(0,0,0,0.35);
 }
 
-.vr-card:hover::before { opacity: 1; }
+.vr-card:hover .vr-card-bar { opacity: 1; }
+
+.vr-card-inner {
+  padding: 26px 28px 24px;
+  position: relative;
+  z-index: 2;
+}
+
+/* corner badge */
+.vr-card-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px 14px 4px 12px;
+  background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(124,77,255,0.15));
+  border-bottom-left-radius: 10px;
+  border-left: 1px solid rgba(0,229,255,0.1);
+  border-bottom: 1px solid rgba(0,229,255,0.1);
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 8px rgba(0,229,255,0.4);
+}
 
 .vr-card-icon {
-  width: 48px; height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(124,77,255,0.1));
+  width: 50px; height: 50px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(0,229,255,0.08), rgba(124,77,255,0.08));
+  border: 1px solid rgba(0,229,255,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 18px;
-  font-size: 22px;
+  margin-bottom: 20px;
+  font-size: 24px;
+  box-shadow: 0 0 20px rgba(0,229,255,0.05);
+}
+
+.vr-card:hover .vr-card-icon {
+  border-color: rgba(0,229,255,0.25);
+  box-shadow: 0 0 24px rgba(0,229,255,0.1);
 }
 
 .vr-card h3 {
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   position: relative;
+  letter-spacing: 0.3px;
 }
 
 .vr-card p {
   font-size: 13px;
   color: var(--text-secondary);
   position: relative;
+  margin-bottom: 0;
 }
 
 .vr-card-actions {
   display: flex;
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 20px;
   position: relative;
 }
 
 .vr-card-actions button {
-  padding: 7px 16px;
-  border-radius: 20px;
+  padding: 8px 18px;
+  border-radius: 22px;
   font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .vr-btn-preview {
-  background: rgba(0,229,255,0.1);
+  background: linear-gradient(135deg, rgba(0,229,255,0.12), rgba(0,229,255,0.06));
   border: 1px solid rgba(0,229,255,0.25);
   color: var(--accent-cyan);
+  text-shadow: 0 0 8px rgba(0,229,255,0.3);
 }
 .vr-btn-preview:hover {
-  background: rgba(0,229,255,0.2);
+  background: linear-gradient(135deg, rgba(0,229,255,0.22), rgba(0,229,255,0.12));
+  border-color: rgba(0,229,255,0.4);
+  box-shadow: 0 0 16px rgba(0,229,255,0.15);
 }
 
 .vr-btn-open {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.03);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
 }
 .vr-btn-open:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.07);
   color: var(--text-primary);
+  border-color: var(--border-hover);
 }
 
 /* VR Modal */
@@ -1601,7 +1653,8 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   .hero-subtitle { font-size: 13px; line-height: 1.7; }
   .section-title { font-size: 22px; }
   .vr-grid { grid-template-columns: 1fr; gap: 16px; }
-  .vr-card { padding: 22px; }
+  .vr-card-inner { padding: 20px; }
+  .vr-card-badge { font-size: 8px; padding: 3px 10px; }
   .gallery-card-tag { font-size: 10px; padding: 2px 8px; }
   .filter-btn { padding: 8px 14px; font-size: 11px; }
   .lightbox-img { max-width: 95vw; }
@@ -2222,16 +2275,20 @@ videoModal.addEventListener('click', (e) => {
 // =====================
 const vrGrid = document.getElementById('vrGrid');
 
-vrCases.forEach((vr) => {
+vrCases.forEach((vr, i) => {
   const card = document.createElement('div');
   card.className = 'vr-card';
   card.innerHTML = `
-    <div class="vr-card-icon">${vr.icon}</div>
-    <h3>${vr.title}</h3>
-    <p>${vr.description}</p>
-    <div class="vr-card-actions">
-      <button class="vr-btn-preview" data-url="${vr.url}" data-title="${vr.title}">▶ 预览</button>
-      <button class="vr-btn-open" onclick="window.open('${vr.url}', '_blank')">↗ 新窗口</button>
+    <div class="vr-card-bar"></div>
+    <div class="vr-card-inner">
+      <div class="vr-card-badge">VR-${String(i+1).padStart(2,'0')}</div>
+      <div class="vr-card-icon">${vr.icon}</div>
+      <h3>${vr.title}</h3>
+      <p>${vr.description}</p>
+      <div class="vr-card-actions">
+        <button class="vr-btn-preview" data-url="${vr.url}" data-title="${vr.title}">▶ 预览</button>
+        <button class="vr-btn-open" onclick="window.open('${vr.url}', '_blank')">↗ 新窗口</button>
+      </div>
     </div>
   `;
   vrGrid.appendChild(card);
