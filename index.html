@@ -42,14 +42,55 @@ html {
   font-size: 16px;
 }
 
+html { background: var(--bg-deep); }
+
 body {
   font-family: var(--font-body);
-  background: var(--bg-deep);
+  background: transparent;
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* ============================================
+   STATIC PARTICLE FIELD (CSS-only, no JS, no animation)
+   ============================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(0,229,255,0.5) 0.9px, transparent 1.4px),
+    radial-gradient(circle at 78% 32%, rgba(0,229,255,0.4) 0.9px, transparent 1.4px),
+    radial-gradient(circle at 45% 65%, rgba(157,78,221,0.45) 0.9px, transparent 1.4px),
+    radial-gradient(circle at 25% 88%, rgba(0,229,255,0.35) 0.9px, transparent 1.4px),
+    radial-gradient(circle at 88% 78%, rgba(157,78,221,0.4) 0.9px, transparent 1.4px);
+  background-size: 220px 220px, 280px 280px, 320px 320px, 260px 260px, 240px 240px;
+  background-position: 0 0, 110px 110px, 60px 60px, 130px 130px, 80px 80px;
+  background-attachment: fixed;
+  background-repeat: repeat;
+  opacity: 0.85;
+}
+
+/* 顶部细网格叠加（径向遮罩让中心清晰、边缘淡出） */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-attachment: fixed;
+  mask-image: radial-gradient(ellipse at center, black 0%, black 35%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 0%, black 35%, transparent 80%);
 }
 
 a { color: inherit; text-decoration: none; }
@@ -896,15 +937,20 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   min-height: 0;
 }
 
-.video-modal-body iframe {
+.video-modal-body video {
   width: 100%;
   height: 100%;
   max-width: 1280px;
   max-height: 80vh;
-  border: 0;
-  border-radius: 12px;
+  object-fit: contain;
   background: #000;
+  border-radius: 12px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  outline: none;
+}
+
+.video-modal-body video::-webkit-media-controls-panel {
+  background: rgba(0,0,0,0.6);
 }
 
 /* ============================================
@@ -1317,6 +1363,16 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   color: var(--text-primary);
 }
 
+.contact-value-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+  user-select: all;
+  cursor: text;
+}
+
 /* Footer */
 .footer {
   text-align: center;
@@ -1457,7 +1513,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
     padding: 0;
     align-items: stretch;
   }
-  .video-modal-body iframe {
+  .video-modal-body video {
     max-width: 100%;
     max-height: none;
     border-radius: 0;
@@ -1677,6 +1733,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
         <div class="contact-icon">💬</div>
         <div class="contact-label">微信</div>
         <div class="contact-value">申千</div>
+        <div class="contact-value-sub">VSL1742436466</div>
       </div>
       <div class="contact-item">
         <div class="contact-icon">🔗</div>
@@ -1730,7 +1787,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
     <button class="modal-close-btn" id="videoModalClose">✕</button>
   </div>
   <div class="video-modal-body">
-    <iframe id="videoModalIframe" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <video id="videoModalPlayer" controls playsinline preload="metadata"></video>
   </div>
 </div>
 
@@ -2091,19 +2148,25 @@ videoWorks.forEach((video, idx) => {
 // =====================
 const videoModal = document.getElementById('videoModal');
 const videoModalTitle = document.getElementById('videoModalTitle');
-const videoModalIframe = document.getElementById('videoModalIframe');
+const videoModalPlayer = document.getElementById('videoModalPlayer');
 const videoModalClose = document.getElementById('videoModalClose');
 
 function openVideoModal(video) {
   videoModalTitle.textContent = video.title;
-  videoModalIframe.src = video.src;
+  videoModalPlayer.src = video.src;
   videoModal.classList.add('open');
   document.body.style.overflow = 'hidden';
+  const playPromise = videoModalPlayer.play();
+  if (playPromise && typeof playPromise.catch === 'function') {
+    playPromise.catch(() => { /* 静默忽略，等待用户点播放 */ });
+  }
 }
 
 function closeVideoModal() {
   videoModal.classList.remove('open');
-  videoModalIframe.src = '';
+  videoModalPlayer.pause();
+  videoModalPlayer.removeAttribute('src');
+  videoModalPlayer.load();
   document.body.style.overflow = '';
 }
 
