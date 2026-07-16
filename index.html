@@ -738,56 +738,78 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 
 .video-card {
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(255,255,255,0.06);
   cursor: pointer;
   position: relative;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
 }
 
 .video-card::before,
 .video-card::after {
   content: '';
   position: absolute;
-  width: 16px;
-  height: 16px;
-  border: 1.5px solid var(--accent-purple);
-  opacity: 0.7;
+  width: 20px;
+  height: 20px;
   pointer-events: none;
   z-index: 5;
 }
 .video-card::before {
   top: 10px; left: 10px;
-  border-right: 0; border-bottom: 0;
+  border-top: 1.5px solid var(--accent-cyan);
+  border-left: 1.5px solid var(--accent-cyan);
 }
 .video-card::after {
   bottom: 10px; right: 10px;
-  border-left: 0; border-top: 0;
+  border-bottom: 1.5px solid var(--accent-cyan);
+  border-right: 1.5px solid var(--accent-cyan);
 }
 
 .video-card:hover {
-  border-color: rgba(124,77,255,0.35);
-  box-shadow: 0 16px 40px rgba(124,77,255,0.1);
+  border-color: rgba(0,229,255,0.25);
+  box-shadow: 0 8px 40px rgba(0,229,255,0.12), inset 0 0 60px rgba(0,229,255,0.03);
 }
 
 .video-card-cover {
   position: relative;
   width: 100%;
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #0a0a1a 0%, #0d1025 40%, #12082a 70%, #0a0a1a 100%);
   overflow: hidden;
 }
 
-.video-card-cover img {
-  width: 100%;
-  display: block;
-  object-fit: cover;
+/* Scanline overlay */
+.video-card-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.015) 2px,
+    rgba(255,255,255,0.015) 4px
+  );
+  z-index: 1;
+  pointer-events: none;
 }
 
+/* Bottom gradient fade */
 .video-card-cover::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.4) 100%);
+  background: linear-gradient(180deg, transparent 40%, rgba(6,6,11,0.7) 100%);
+  z-index: 1;
+}
+
+.video-card-cover img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .video-play-btn {
@@ -795,17 +817,17 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background: rgba(0,229,255,0.2);
-  border: 2px solid var(--accent-cyan);
+  background: rgba(0,229,255,0.1);
+  border: 2px solid rgba(0,229,255,0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 0 20px rgba(0,229,255,0.4);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 30px rgba(0,229,255,0.3), inset 0 0 20px rgba(0,229,255,0.1);
 }
 
 .video-play-btn::after {
@@ -813,34 +835,40 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 8px 0 8px 14px;
-  border-color: transparent transparent transparent #fff;
-  margin-left: 3px;
+  border-width: 10px 0 10px 18px;
+  border-color: transparent transparent transparent var(--accent-cyan);
+  margin-left: 4px;
+}
+
+.video-card:hover .video-play-btn {
+  background: rgba(0,229,255,0.2);
+  box-shadow: 0 0 40px rgba(0,229,255,0.5), inset 0 0 30px rgba(0,229,255,0.15);
 }
 
 .video-card-index {
   position: absolute;
   top: 12px;
-  right: 12px;
+  left: 12px;
   z-index: 3;
   font-family: var(--font-display);
   font-size: 10px;
   letter-spacing: 2px;
   color: var(--accent-cyan);
-  background: rgba(6,6,11,0.75);
+  background: rgba(6,6,11,0.8);
   backdrop-filter: blur(6px);
-  padding: 4px 8px;
-  border-radius: 3px;
-  border: 1px solid rgba(0,229,255,0.3);
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,229,255,0.2);
 }
 
 .video-card-info {
-  padding: 18px 22px;
+  padding: 20px 22px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(180deg, rgba(16,16,28,0.9) 0%, var(--bg-card) 100%);
 }
 
 .video-card-info h3 {
@@ -861,14 +889,14 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
-  padding: 4px 10px;
-  border: 1px solid rgba(124,77,255,0.3);
-  border-radius: 3px;
+  padding: 4px 12px;
+  border: 1px solid rgba(0,229,255,0.2);
+  border-radius: 4px;
   font-family: var(--font-display);
   font-size: 10px;
   letter-spacing: 2px;
-  color: var(--accent-purple);
-  background: rgba(124,77,255,0.06);
+  color: var(--accent-cyan);
+  background: rgba(0,229,255,0.06);
   white-space: nowrap;
 }
 .video-card-meta::before {
@@ -1402,7 +1430,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
    ============================================ */
 @media (max-width: 1024px) {
   .gallery-grid { columns: 2; }
-  .video-grid { grid-template-columns: repeat(2, 1fr); }
+  .video-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 }
 
 @media (max-width: 768px) {
@@ -1869,14 +1897,14 @@ const videoWorks = [
     title: '天圆地方开场预演',
     description: '品牌发布会现场舞美效果展示',
     src: './video_1_yuyan.mp4',
-    type: 'video/m4v',
+    type: 'video/mp4',
   },
   {
     id: 2,
     title: '贝利金杯',
     description: '年度盛典现场实录',
     src: './video_2_bl.mp4',
-    type: 'video/m4v',
+    type: 'video/mp4',
   },
   {
     id: 3,
