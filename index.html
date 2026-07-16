@@ -1746,13 +1746,13 @@ const galleryImages = [
     id: 1,
     title: '爱美客2026全系新品发布会',
     category: '品牌发布会',
-    image: './img/stage_5_imeik_reception.jpg'
+    image: './img/stage_1_imeik_mainstage.jpg'
   },
   {
     id: 2,
     title: '元源出 品牌展区',
     category: '品牌展区',
-    image: './img/stage_4_hishaperf.jpg'
+    image: './img/stage_2_yuanyuan.jpg'
   },
   {
     id: 3,
@@ -1764,13 +1764,13 @@ const galleryImages = [
     id: 4,
     title: 'HISHAPERF 嗨塑 品牌展区',
     category: '品牌展区',
-    image: 'https://www.coze.cn/s/ym-3MEmLJH8/'
+    image: './img/stage_4_hishaperf.jpg'
   },
   {
     id: 5,
     title: '爱美客2026 签到处',
     category: '品牌展区',
-    image: './img/stage_1_imeik_mainstage.jpg'
+    image: './img/stage_5_imeik_reception.jpg'
   },
   {
     id: 6,
@@ -1782,19 +1782,19 @@ const galleryImages = [
     id: 7,
     title: '复星雅立峰生物 年度服务商年会',
     category: '年会盛典',
-    image: './img/stage_2_yuanyuan.jpg'
+    image: './img/stage_7_fosun.jpg'
   },
   {
     id: 8,
     title: '顺丰速运 全球供应商大会',
     category: '年会盛典',
-    image: 'https://www.coze.cn/s/xfUUQ9YPy_M/'
+    image: './img/stage_8_sfexpress.jpg'
   },
   {
     id: 9,
     title: '灯光秀舞台',
     category: '灯光秀',
-    image: './img/stage_7_fosun.jpg'
+    image: './img/stage_9_lightshow.jpg'
   }
 ];
 
@@ -1808,23 +1808,20 @@ const videoWorks = [
     description: '品牌发布会现场舞美效果展示',
     src: 'https://www.coze.cn/s/--H5QjBdKfE/',
     type: 'video/m4v',
-    poster: './img/stage_5_imeik_reception.jpg'
   },
   {
     id: 2,
     title: '复星&顺丰大会',
     description: '年度盛典现场实录',
-    src: './img/stage_9_lightshow.jpg',
+    src: 'https://www.coze.cn/s/9t5PF1aAALU/',
     type: 'video/m4v',
-    poster: './img/stage_2_yuanyuan.jpg'
   },
   {
     id: 3,
     title: '华南师大迎新',
     description: '高校晚会现场舞美与灯光',
-    src: './img/stage_8_sfexpress.jpg',
+    src: 'https://www.coze.cn/s/CABZck95Xzo/',
     type: 'video/mp4',
-    poster: './img/stage_6_scnu.jpg'
   },
   {
     id: 4,
@@ -1832,7 +1829,6 @@ const videoWorks = [
     description: '大型灯光秀现场效果',
     src: 'https://www.coze.cn/s/B-gzu5IN91s/',
     type: 'video/mp4',
-    poster: './img/stage_7_fosun.jpg'
   },
   {
     id: 5,
@@ -1840,7 +1836,6 @@ const videoWorks = [
     description: '主舞台效果完整呈现',
     src: 'https://www.coze.cn/s/DQzWckZ7z-4/',
     type: 'video/mp4',
-    poster: './img/stage_5_imeik_reception.jpg'
   }
 ];
 
@@ -2075,7 +2070,7 @@ videoWorks.forEach((video, idx) => {
   const num = String(idx + 1).padStart(2, '0');
   card.innerHTML = `
     <div class="video-card-cover">
-      <img src="${video.poster}" alt="${video.title}" loading="lazy">
+      ${video.poster ? `<img src="${video.poster}" alt="${video.title}" loading="lazy">` : ''}
       <div class="video-card-index">VID_${num}</div>
       <div class="video-play-btn"></div>
     </div>
