@@ -938,10 +938,12 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 
 .video-modal-body video {
+  display: block;
   width: 100%;
-  height: 100%;
   max-width: 1280px;
   max-height: 80vh;
+  min-height: 360px;
+  aspect-ratio: 16 / 9;
   object-fit: contain;
   background: #000;
   border-radius: 12px;
@@ -1516,6 +1518,8 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   .video-modal-body video {
     max-width: 100%;
     max-height: none;
+    min-height: 240px;
+    aspect-ratio: 16 / 9;
     border-radius: 0;
   }
 
@@ -2153,6 +2157,8 @@ const videoModalClose = document.getElementById('videoModalClose');
 
 function openVideoModal(video) {
   videoModalTitle.textContent = video.title;
+  videoModalPlayer.removeEventListener('error', videoModalErrorHandler);
+  videoModalPlayer.addEventListener('error', videoModalErrorHandler);
   videoModalPlayer.src = video.src;
   videoModal.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -2160,6 +2166,13 @@ function openVideoModal(video) {
   if (playPromise && typeof playPromise.catch === 'function') {
     playPromise.catch(() => { /* 静默忽略，等待用户点播放 */ });
   }
+}
+function videoModalErrorHandler() {
+  const err = videoModalPlayer.error;
+  const code = err ? err.code : 'unknown';
+  const msg = err ? (err.message || '未知错误') : '视频加载失败';
+  videoModalTitle.textContent = '⚠ 播放失败 (' + code + '): ' + msg;
+  console.error('[VideoModal] 错误 code=' + code + ' src=' + videoModalPlayer.currentSrc, err);
 }
 
 function closeVideoModal() {
